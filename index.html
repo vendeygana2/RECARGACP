@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recarga de CP</title>
     <style>
+        /* Estilos anteriores se mantienen igual */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-image: url('https://wallpapers.com/images/featured/imagenes-de-call-of-duty-7lrqnchbx478ucgg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             margin: 0;
             padding: 20px;
         }
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid #ccc;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -58,7 +62,7 @@
             transform: translate(-50%, -50%);
             width: 90%;
             max-width: 400px;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -69,9 +73,17 @@
             width: 50px;
             margin-bottom: 10px;
         }
-        .modal p {
-            margin: 10px 0;
-            font-size: 16px;
+        .modal h3 {
+            text-align: center;
+            color: #ED7318;
+        }
+        .resumen-item {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .resumen-concepto {
+            font-weight: bold;
+            color: #ED7318;
         }
         .overlay {
             display: none;
@@ -89,21 +101,18 @@
             margin: 0 auto 15px;
             display: block;
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo en la parte superior -->
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Call_of_Duty_Mobile_Logo.png" alt="Call of Duty Mobile Logo" class="logo-header">
 
         <h2>Recarga de CP</h2>
         <form id="recargaForm">
             <div class="form-group">
                 <label for="cpAmount">Selecciona la cantidad de CP</label>
-                <select id="cpAmount" name="cpAmount">
+                <select id="cpAmount" name="cpAmount" required>
+                    <option value="" selected disabled>-- Seleccione una cantidad --</option>
                     <option value="80 CP = 126,10 Bs">🌟 80 CP = 126,10 Bs</option>
                     <option value="420 CP = 540,00 Bs">🌟 420 CP = 540,00 Bs</option>
                     <option value="880 CP = 1.050,00 Bs">🌟 880 CP = 1.050,00 Bs</option>
@@ -112,34 +121,41 @@
                     <option value="10800 CP = 10.190,00 Bs">🌟 10800 CP = 10.190,00 Bs</option>
                 </select>
             </div>
+            
             <div class="form-group">
                 <label for="correo">Correo</label>
                 <input type="email" id="correo" name="correo" pattern=".+@.+\..+" title="Por favor, ingrese un correo válido con @." required>
             </div>
+            
             <div class="form-group">
                 <label for="idJugador">ID del Jugador</label>
                 <input type="number" id="idJugador" name="idJugador" required>
             </div>
+            
             <div class="form-group">
                 <label for="apodo">Apodo</label>
                 <input type="text" id="apodo" name="apodo" required>
             </div>
-            <!-- Campos adicionales -->
+            
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
                 <input type="number" id="telefono" name="telefono" required>
             </div>
+            
             <div class="form-group">
                 <label for="cedula">Cédula de Identidad</label>
                 <input type="number" id="cedula" name="cedula" required>
             </div>
+            
             <div class="form-group">
                 <label for="metodoPago">Método de Pago</label>
-                <select id="metodoPago" name="metodoPago">
+                <select id="metodoPago" name="metodoPago" required>
+                    <option value="" disabled selected>Seleccione un método</option>
                     <option value="💸 Descuento en VENDE Y GANA">💸 Descuento en VENDE Y GANA</option>
                     <option value="📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787">📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787</option>
                 </select>
             </div>
+            
             <button type="button" class="btn" onclick="mostrarResumen()">Solicitar Recargar</button>
         </form>
     </div>
@@ -148,14 +164,19 @@
     <div class="overlay" id="overlay"></div>
     <div class="modal" id="modalResumen">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Logo WhatsApp">
-        <p>¡Datos copiados con éxito!</p>
-        <p id="resumen"></p>
+        <h3>RESUMEN DE SOLICITUD</h3>
+        <div id="resumen"></div>
         <button class="btn" onclick="enviarMensaje()">Enviar a WhatsApp</button>
     </div>
 
     <script>
         function mostrarResumen() {
             const cpAmount = document.getElementById('cpAmount').value;
+            if(cpAmount === "") {
+                alert("Por favor seleccione una cantidad de CP");
+                return;
+            }
+            
             const correo = document.getElementById('correo').value;
             const telefono = document.getElementById('telefono').value;
             const idJugador = document.getElementById('idJugador').value;
@@ -163,17 +184,32 @@
             const cedula = document.getElementById('cedula').value;
             const metodoPago = document.getElementById('metodoPago').value;
 
-            const resumen = `CP: ${cpAmount}\nCorreo: ${correo}\nTeléfono: ${telefono}\nCédula: ${cedula}\nID del Jugador: ${idJugador}\nApodo: ${apodo}\nMétodo de Pago: ${metodoPago}`;
-            document.getElementById('resumen').innerText = resumen;
-
+            const resumenHTML = `
+                <div class="resumen-item"><span class="resumen-concepto">CP:</span> ${cpAmount}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Correo:</span> ${correo}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Teléfono:</span> ${telefono}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Cédula:</span> ${cedula}</div>
+                <div class="resumen-item"><span class="resumen-concepto">ID del Jugador:</span> ${idJugador}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Apodo:</span> ${apodo}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Método de Pago:</span> ${metodoPago}</div>
+            `;
+            
+            document.getElementById('resumen').innerHTML = resumenHTML;
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('modalResumen').style.display = 'block';
         }
 
         function enviarMensaje() {
-            const resumen = document.getElementById('resumen').innerText;
+            const conceptos = document.querySelectorAll('.resumen-concepto');
+            const valores = document.querySelectorAll('.resumen-item');
+            let resumenTexto = "🚀 RESUMEN DE RECARGA CP 🚀\n\n";
+            
+            for(let i = 0; i < conceptos.length; i++) {
+                resumenTexto += `${conceptos[i].textContent} ${valores[i].textContent.replace(conceptos[i].textContent, '').trim()}\n`;
+            }
+            
             const numeroWhatsApp = '+584247388620';
-            const mensaje = encodeURIComponent(resumen);
+            const mensaje = encodeURIComponent(resumenTexto);
             window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
         }
     </script>
