@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recarga de CP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+        h2 {
+            color: #ED7318;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: #ED7318;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #d56314;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+        .modal img {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+        .modal p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Recarga de CP</h2>
+        <form id="recargaForm">
+            <div class="form-group">
+                <label for="cpAmount">Selecciona la cantidad de CP</label>
+                <select id="cpAmount" name="cpAmount">
+                    <option value="80 CP = 126,10 Bs">🌟 80 CP = 126,10 Bs</option>
+                    <option value="420 CP = 540,00 Bs">🌟 420 CP = 540,00 Bs</option>
+                    <option value="880 CP = 1.050,00 Bs">🌟 880 CP = 1.050,00 Bs</option>
+                    <option value="2400 CP = 2.595,00 Bs">🌟 2400 CP = 2.595,00 Bs</option>
+                    <option value="5000 CP = 5.130,00 Bs">🌟 5000 CP = 5.130,00 Bs</option>
+                    <option value="10800 CP = 10.190,00 Bs">🌟 10800 CP = 10.190,00 Bs</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" required>
+            </div>
+            <div class="form-group">
+                <label for="idJugador">ID del Jugador</label>
+                <input type="text" id="idJugador" name="idJugador" required>
+            </div>
+            <div class="form-group">
+                <label for="apodo">Apodo</label>
+                <input type="text" id="apodo" name="apodo" required>
+            </div>
+            <button type="button" class="btn" onclick="mostrarResumen()">Solicitar Recargar</button>
+        </form>
+    </div>
+
+    <!-- Modal de resumen -->
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="modalResumen">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Logo WhatsApp">
+        <p>¡Datos copiados con éxito!</p>
+        <p id="resumen"></p>
+        <button class="btn" onclick="enviarMensaje()">Enviar a WhatsApp</button>
+    </div>
+
+    <script>
+        function mostrarResumen() {
+            const cpAmount = document.getElementById('cpAmount').value;
+            const correo = document.getElementById('correo').value;
+            const telefono = document.getElementById('telefono').value;
+            const idJugador = document.getElementById('idJugador').value;
+            const apodo = document.getElementById('apodo').value;
+
+            const resumen = `CP: ${cpAmount}\nCorreo: ${correo}\nTeléfono: ${telefono}\nID del Jugador: ${idJugador}\nApodo: ${apodo}`;
+            document.getElementById('resumen').innerText = resumen;
+
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('modalResumen').style.display = 'block';
+        }
+
+        function enviarMensaje() {
+            const resumen = document.getElementById('resumen').innerText;
+            const numeroWhatsApp = '04247388620';
+            const mensaje = encodeURIComponent(resumen);
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
+        }
+    </script>
+</body>
+</html>
