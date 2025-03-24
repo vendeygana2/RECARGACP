@@ -89,11 +89,14 @@
             margin: 0 auto 15px;
             display: block;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Imagen del logo en la cabecera -->
+        <!-- Logo en la parte superior -->
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Call_of_Duty_Mobile_Logo.png" alt="Call of Duty Mobile Logo" class="logo-header">
 
         <h2>Recarga de CP</h2>
@@ -114,16 +117,32 @@
                 <input type="email" id="correo" name="correo" required>
             </div>
             <div class="form-group">
-                <label for="telefono">Teléfono</label>
-                <input type="tel" id="telefono" name="telefono" required>
-            </div>
-            <div class="form-group">
                 <label for="idJugador">ID del Jugador</label>
                 <input type="text" id="idJugador" name="idJugador" required>
             </div>
             <div class="form-group">
                 <label for="apodo">Apodo</label>
                 <input type="text" id="apodo" name="apodo" required>
+            </div>
+            <!-- Campos adicionales -->
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" required>
+            </div>
+            <div class="form-group">
+                <label for="cedula">Cédula de Identidad</label>
+                <input type="text" id="cedula" name="cedula" required>
+            </div>
+            <div class="form-group">
+                <label for="metodoPago">Método de Pago</label>
+                <select id="metodoPago" name="metodoPago" onchange="mostrarSubirImagen()">
+                    <option value="💸 Descuento en VENDE Y GANA">💸 Descuento en VENDE Y GANA</option>
+                    <option value="📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787">📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="uploadImageField">
+                <label for="imagenComprobante">Subir Comprobante</label>
+                <input type="file" id="imagenComprobante" name="imagenComprobante" accept="image/*">
             </div>
             <button type="button" class="btn" onclick="mostrarResumen()">Solicitar Recargar</button>
         </form>
@@ -139,14 +158,27 @@
     </div>
 
     <script>
+        function mostrarSubirImagen() {
+            const metodoPago = document.getElementById('metodoPago').value;
+            const uploadField = document.getElementById('uploadImageField');
+            if (metodoPago.includes('Pago Móvil')) {
+                uploadField.classList.remove('hidden');
+            } else {
+                uploadField.classList.add('hidden');
+            }
+        }
+
         function mostrarResumen() {
             const cpAmount = document.getElementById('cpAmount').value;
             const correo = document.getElementById('correo').value;
             const telefono = document.getElementById('telefono').value;
             const idJugador = document.getElementById('idJugador').value;
             const apodo = document.getElementById('apodo').value;
+            const cedula = document.getElementById('cedula').value;
+            const metodoPago = document.getElementById('metodoPago').value;
+            const imagen = document.getElementById('imagenComprobante').files[0] ? "Imagen cargada" : "Sin imagen";
 
-            const resumen = `CP: ${cpAmount}\nCorreo: ${correo}\nTeléfono: ${telefono}\nID del Jugador: ${idJugador}\nApodo: ${apodo}`;
+            const resumen = `CP: ${cpAmount}\nCorreo: ${correo}\nTeléfono: ${telefono}\nCédula: ${cedula}\nID del Jugador: ${idJugador}\nApodo: ${apodo}\nMétodo de Pago: ${metodoPago}\nComprobante: ${imagen}`;
             document.getElementById('resumen').innerText = resumen;
 
             document.getElementById('overlay').style.display = 'block';
