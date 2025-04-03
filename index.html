@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recarga de CP</title>
     <style>
-        /* Estilos anteriores se mantienen igual */
         body {
             font-family: Arial, sans-serif;
             background-image: url('https://wallpapers.com/images/featured/imagenes-de-call-of-duty-7lrqnchbx478ucgg.jpg');
@@ -30,6 +29,7 @@
         }
         .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
         label {
             display: block;
@@ -101,6 +101,26 @@
             margin: 0 auto 15px;
             display: block;
         }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            cursor: pointer;
+        }
+        .section-title {
+            background-color: #ED7318;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 20px 0 10px 0;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +129,8 @@
 
         <h2>Recarga de CP</h2>
         <form id="recargaForm">
+            <div class="section-title">INFORMACIÓN DE RECARGA</div>
+            
             <div class="form-group">
                 <label for="cpAmount">Selecciona la cantidad de CP</label>
                 <select id="cpAmount" name="cpAmount" required>
@@ -120,32 +142,61 @@
                     <option value="5000 CP🪙 = Bs. 5,488.00 💰">5000 CP🪙 = Bs. 5,488.00 💰</option>
                     <option value="10800 CP🪙 = Bs. 10,826.00 💰">10800 CP🪙 = Bs. 10,826.00 💰</option>
                 </select>
+                <div class="error-message" id="cpAmount-error">Este campo es obligatorio</div>
             </div>
             
             <div class="form-group">
-                <label for="correo">Correo</label>
+                <label for="correo">Correo de la cuenta a recargar</label>
                 <input type="email" id="correo" name="correo" pattern=".+@.+\..+" title="Por favor, ingrese un correo válido con @." required>
+                <div class="error-message" id="correo-error">Este campo es obligatorio</div>
             </div>
+            
+            <div class="form-group">
+                <label for="contrasena">Contraseña de correo</label>
+                <input type="password" id="contrasena" name="contrasena" required>
+                <span class="password-toggle" onclick="togglePassword()">👁️</span>
+                <div class="error-message" id="contrasena-error">Este campo es obligatorio</div>
+            </div>
+            
+            <div class="section-title">INFORMACIÓN DEL JUGADOR</div>
             
             <div class="form-group">
                 <label for="idJugador">ID del Jugador</label>
                 <input type="number" id="idJugador" name="idJugador" required>
+                <div class="error-message" id="idJugador-error">Este campo es obligatorio</div>
             </div>
             
             <div class="form-group">
                 <label for="apodo">Apodo</label>
                 <input type="text" id="apodo" name="apodo" required>
+                <div class="error-message" id="apodo-error">Este campo es obligatorio</div>
             </div>
             
             <div class="form-group">
-                <label for="telefono">Teléfono</label>
+                <label for="metodoInicio">Método de Inicio de Sesión</label>
+                <select id="metodoInicio" name="metodoInicio" required>
+                    <option value="" disabled selected>Seleccione un método</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Activision">Activision</option>
+                </select>
+                <div class="error-message" id="metodoInicio-error">Este campo es obligatorio</div>
+            </div>
+            
+            <div class="section-title">INFORMACIÓN DEL CLIENTE (VENDE Y GANA)</div>
+            
+            <div class="form-group">
+                <label for="telefono">Teléfono cliente Vende y Gana</label>
                 <input type="number" id="telefono" name="telefono" required>
+                <div class="error-message" id="telefono-error">Este campo es obligatorio</div>
             </div>
             
             <div class="form-group">
-                <label for="cedula">Cédula de Identidad</label>
+                <label for="cedula">Cédula cliente Vende y Gana</label>
                 <input type="number" id="cedula" name="cedula" required>
+                <div class="error-message" id="cedula-error">Este campo es obligatorio</div>
             </div>
+            
+            <div class="section-title">MÉTODO DE PAGO</div>
             
             <div class="form-group">
                 <label for="metodoPago">Método de Pago</label>
@@ -154,6 +205,7 @@
                     <option value="💸 Descuento en VENDE Y GANA">💸 Descuento en VENDE Y GANA</option>
                     <option value="📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787">📲 Pago Móvil Mercantil: Cédula: 13967475 Teléfono: 04120754787</option>
                 </select>
+                <div class="error-message" id="metodoPago-error">Este campo es obligatorio</div>
             </div>
             
             <button type="button" class="btn" onclick="mostrarResumen()">Solicitar Recargar</button>
@@ -170,27 +222,66 @@
     </div>
 
     <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('contrasena');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        }
+
         function mostrarResumen() {
-            const cpAmount = document.getElementById('cpAmount').value;
-            if(cpAmount === "") {
-                alert("Por favor seleccione una cantidad de CP");
+            // Ocultar todos los mensajes de error primero
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            
+            // Validar campos obligatorios
+            let isValid = true;
+            const campos = [
+                'cpAmount', 'correo', 'contrasena', 'idJugador', 
+                'apodo', 'metodoInicio', 'telefono', 'cedula', 'metodoPago'
+            ];
+            
+            campos.forEach(campo => {
+                const elemento = document.getElementById(campo);
+                if (!elemento.value) {
+                    document.getElementById(`${campo}-error`).style.display = 'block';
+                    isValid = false;
+                }
+            });
+            
+            // Validar formato de correo
+            const correo = document.getElementById('correo').value;
+            if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+                document.getElementById('correo-error').textContent = 'Ingrese un correo válido';
+                document.getElementById('correo-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
                 return;
             }
             
-            const correo = document.getElementById('correo').value;
+            // Si todo es válido, mostrar el resumen
+            const cpAmount = document.getElementById('cpAmount').value;
+            const correoVal = document.getElementById('correo').value;
+            const contrasena = document.getElementById('contrasena').value;
             const telefono = document.getElementById('telefono').value;
             const idJugador = document.getElementById('idJugador').value;
             const apodo = document.getElementById('apodo').value;
             const cedula = document.getElementById('cedula').value;
+            const metodoInicio = document.getElementById('metodoInicio').value;
             const metodoPago = document.getElementById('metodoPago').value;
 
             const resumenHTML = `
                 <div class="resumen-item"><span class="resumen-concepto">CP:</span> ${cpAmount}</div>
-                <div class="resumen-item"><span class="resumen-concepto">Correo:</span> ${correo}</div>
-                <div class="resumen-item"><span class="resumen-concepto">Teléfono:</span> ${telefono}</div>
-                <div class="resumen-item"><span class="resumen-concepto">Cédula:</span> ${cedula}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Correo de la cuenta:</span> ${correoVal}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Contraseña:</span> ${contrasena}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Teléfono cliente Vende y Gana:</span> ${telefono}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Cédula cliente Vende y Gana:</span> ${cedula}</div>
                 <div class="resumen-item"><span class="resumen-concepto">ID del Jugador:</span> ${idJugador}</div>
                 <div class="resumen-item"><span class="resumen-concepto">Apodo:</span> ${apodo}</div>
+                <div class="resumen-item"><span class="resumen-concepto">Método de Inicio:</span> ${metodoInicio}</div>
                 <div class="resumen-item"><span class="resumen-concepto">Método de Pago:</span> ${metodoPago}</div>
             `;
             
