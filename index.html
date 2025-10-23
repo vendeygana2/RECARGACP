@@ -470,43 +470,25 @@
             overflow-y: auto;
         }
         
-        .logo {
-            width: 120px;
-            height: 60px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .operator-name {
+            font-size: 24px;
             font-weight: bold;
-            font-size: 20px;
+            margin-bottom: 15px;
+            padding: 10px;
             border-radius: 8px;
+            color: white;
         }
         
-        .logo.movistar {
+        .operator-name.movistar {
             background-color: #00aae0;
-            color: white;
         }
         
-        .logo.movilnet {
+        .operator-name.movilnet {
             background-color: #ff585f;
-            color: white;
         }
         
-        .logo.digitel {
+        .operator-name.digitel {
             background-color: #dc012a;
-            color: white;
-        }
-        
-        .operator-logo {
-            width: 180px;
-            height: 80px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
         }
         
         .success-icon {
@@ -763,7 +745,7 @@
                     <label for="phone-prefix">Número de teléfono *</label>
                     <div class="phone-container">
                         <select id="phone-prefix" class="phone-prefix" required disabled>
-                            <option value="">Selecciona el código de área</option>
+                            <option value="">Selecciona el código</option>
                         </select>
                         <input type="tel" id="phone-number" class="phone-number" placeholder="Número de teléfono (7 dígitos)" maxlength="7" required disabled>
                     </div>
@@ -802,7 +784,7 @@
     <!-- Modal de confirmación -->
     <div class="modal" id="confirmation-modal">
         <div class="modal-content">
-            <div class="operator-logo" id="modal-logo"></div>
+            <div class="operator-name" id="modal-operator-name">-</div>
             <div class="success-icon">✓</div>
             <h2>RECARGA EXITOSA</h2>
             
@@ -871,15 +853,6 @@
             'Digitel': ['0412', '0422']
         };
 
-        // =============================================
-        // LOGOS POR OPERADORA
-        // =============================================
-        const logosPorOperadora = {
-            'Movistar': 'https://static.wikia.nocookie.net/logopedia/images/0/07/Movistar_2017.svg/revision/latest/scale-to-width-down/250?cb=20200505161041&path-prefix=es',
-            'Movilnet': 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Movilnet-logo_0.png',
-            'Digitel': 'https://static.wikia.nocookie.net/logopedia/images/f/f0/Digitel_Logo_2015.png/revision/latest/scale-to-width-down/200?cb=20151006184217'
-        };
-
         document.addEventListener('DOMContentLoaded', function() {
             // Elementos del DOM
             const promoModal = document.getElementById('promo-modal');
@@ -901,7 +874,7 @@
             const cancelButton = document.getElementById('cancel-btn');
             const modal = document.getElementById('confirmation-modal');
             const closeModalButton = document.getElementById('close-modal');
-            const modalLogo = document.getElementById('modal-logo');
+            const modalOperatorName = document.getElementById('modal-operator-name');
             const modalOperator = document.getElementById('modal-operator');
             const modalPhone = document.getElementById('modal-phone');
             const operationNumber = document.getElementById('operation-number');
@@ -993,7 +966,7 @@
             // Función para cargar prefijos según operadora
             function loadPrefijos(operator) {
                 const prefijos = prefijosPorOperadora[operator] || [];
-                phonePrefixSelect.innerHTML = '<option value="">Selecciona el código de área</option>';
+                phonePrefixSelect.innerHTML = '<option value="">Selecciona el código</option>';
                 
                 prefijos.forEach(prefijo => {
                     const option = document.createElement('option');
@@ -1023,17 +996,10 @@
                 amountSelect.disabled = false;
             }
             
-            // Función para cargar el logo en el modal
-            function loadLogo(operator) {
-                const logoUrl = logosPorOperadora[operator];
-                if (logoUrl) {
-                    modalLogo.style.backgroundImage = `url(${logoUrl})`;
-                } else {
-                    // Si no hay logo, mostrar el nombre de la operadora
-                    modalLogo.style.backgroundImage = 'none';
-                    modalLogo.textContent = operator;
-                    modalLogo.className = `logo ${operator.toLowerCase()}`;
-                }
+            // Función para cargar el nombre de la operadora en el modal
+            function loadOperatorName(operator) {
+                modalOperatorName.textContent = operator;
+                modalOperatorName.className = `operator-name ${operator.toLowerCase()}`;
             }
             
             // Función para enviar datos a Google Sheets
@@ -1243,8 +1209,8 @@ Monto: ${amount}
                     const result = await saveToGoogleSheets(formData);
                     
                     if (result.status === 'success') {
-                        // Cargar el logo de la operadora
-                        loadLogo(selectedOperator);
+                        // Cargar el nombre de la operadora
+                        loadOperatorName(selectedOperator);
                         
                         modalOperator.textContent = selectedOperator;
                         modalPhone.textContent = numeroCompleto;
@@ -1291,7 +1257,7 @@ Monto: ${amount}
                 operatorButtons.forEach(btn => btn.classList.remove('selected'));
                 amountSelect.innerHTML = '<option value="">Seleccione el monto deseado</option>';
                 amountSelect.disabled = true;
-                phonePrefixSelect.innerHTML = '<option value="">Selecciona el código de área</option>';
+                phonePrefixSelect.innerHTML = '<option value="">Selecciona el código</option>';
                 phonePrefixSelect.disabled = true;
                 phoneNumberInput.value = '';
                 phoneNumberInput.disabled = true;
@@ -1309,7 +1275,7 @@ Monto: ${amount}
                     operatorButtons.forEach(btn => btn.classList.remove('selected'));
                     amountSelect.innerHTML = '<option value="">Seleccione el monto deseado</option>';
                     amountSelect.disabled = true;
-                    phonePrefixSelect.innerHTML = '<option value="">Selecciona el código de área</option>';
+                    phonePrefixSelect.innerHTML = '<option value="">Selecciona el código</option>';
                     phonePrefixSelect.disabled = true;
                     phoneNumberInput.value = '';
                     phoneNumberInput.disabled = true;
@@ -1325,5 +1291,4 @@ Monto: ${amount}
     </script>
 </body>
 </html>
-
 
